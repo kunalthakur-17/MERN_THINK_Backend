@@ -9,7 +9,7 @@ const cors = require("cors")
 const cookieParser = require("cookie-parser")
 const app = express();
 app.use(cors({
-    origin: ["http://localhost:5174", "https://mern-think-frontend-lx8a.vercel.app"],
+    origin: ["http://localhost:5174", "https://mern-think-frontend-lx8a.vercel.app", "https://mern-think-frontend.vercel.app"],
     credentials: true
 }));
 app.use(cookieParser());
