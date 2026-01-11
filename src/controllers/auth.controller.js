@@ -259,10 +259,62 @@ async function logOut(req, res){
     }
 }
 
+async function changePassword(req, res) {
+  try {
+    const { currentPassword, newPassword } = req.body;
+    const userId = req.user?.userId;
+
+    if (!currentPassword || !newPassword) {
+      return res.status(400).json({
+        success: false,
+        message: "Current password and new password are required"
+      });
+    }
+
+    if (newPassword.length < 6) {
+      return res.status(400).json({
+        success: false,
+        message: "New password must be at least 6 characters long"
+      });
+    }
+
+    const user = await UserModel.findById(userId);
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found"
+      });
+    }
+
+    const isCurrentPasswordValid = await bcrypt.compare(currentPassword, user.password);
+    if (!isCurrentPasswordValid) {
+      return res.status(401).json({
+        success: false,
+        message: "Current password is incorrect"
+      });
+    }
+
+    const hashNewPassword = await bcrypt.hash(newPassword, 10);
+    await UserModel.findByIdAndUpdate(userId, { password: hashNewPassword });
+
+    return res.status(200).json({
+      status: 200,
+      message: "Password changed successfully"
+    });
+
+  } catch (err) {
+    return res.status(500).json({
+      success: false,
+      message: "Internal server error"
+    });
+  }
+}
+
 const authController = {
     registerUser,
     loginUser,
-    logOut
+    logOut,
+    changePassword
 }
 
 module.exports = authController
