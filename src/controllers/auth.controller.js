@@ -117,13 +117,11 @@ async function registerUser(req, res) {
     =============================== */
     let token;
     try {
-      token = treamandcondition
-        ? jwt.sign({ userId: newUser._id }, process.env.JWT_SECRET)
-        : jwt.sign(
-            { userId: newUser._id },
-            process.env.JWT_SECRET,
-            { expiresIn: "1h" }
-          );
+      token = jwt.sign(
+        { userId: newUser._id },
+        process.env.JWT_SECRET,
+        { expiresIn: "24h" }
+      );
     } catch (err) {
       return res.status(500).json({
         success: false,
@@ -206,7 +204,11 @@ async function loginUser(req, res) {
     =============================== */
     let token;
     try {
-      token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET);
+      token = jwt.sign(
+        { userId: user._id },
+        process.env.JWT_SECRET,
+        { expiresIn: "24h" }
+      );
     } catch (err) {
       return res.status(500).json({
         success: false,
